@@ -1,0 +1,21 @@
+{
+  "name" : "Reddit Rage Faces for Chrome",
+  "version" : "1.1",
+  "description" : "Makes rage faces available for every subreddit.",
+  "content_scripts" : [
+    {
+      "matches" : [
+        "http://www.reddit.com/*",
+        "http://reddit.com/*",
+        "https://www.reddit.com/*",
+        "https://reddit.com/*"
+      ],
+      "js" : ["contentscript.js"],
+      "run_at" : "document_idle",
+      "all_frames" : false
+    }
+  ],
+  "icons" : {
+    "128" : "icon128.png"
+  }
+}
