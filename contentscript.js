@@ -1,5 +1,5 @@
 //This points to the f7u12 CSS file
-var cssLive = "http://www.reddit.com/r/fffffffuuuuuuuuuuuu/stylesheet.css?v=c7d7d1c7d1aaff8983ffe735852c9f4a"
+var cssLive = "http://www.reddit.com/r/fffffffuuuuuuuuuuuu/stylesheet.css"
 
 var req = new XMLHttpRequest();
 req.open(
