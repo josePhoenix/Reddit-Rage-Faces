@@ -14,7 +14,7 @@ var rageStyles = "<style type=\"text/css\" title=\"applied_subreddit_stylesheet\
 var rageIndex = styleScript.indexOf("a[href=");
 while (rageIndex < styleScript.length)
 {
-    // Copy all a[href styles, until the edning bracket.
+    // Copy all a[href styles, until the ending bracket.
     if (styleScript.substring(rageIndex, rageIndex+7) == "a[href=")
     {
         // Rageface, copy to <style> while not }
