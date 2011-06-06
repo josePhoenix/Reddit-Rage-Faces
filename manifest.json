@@ -5,17 +5,21 @@
   "content_scripts" : [
     {
       "matches" : [
-        "http://www.reddit.com/*",
-        "http://reddit.com/*",
-        "https://www.reddit.com/*",
-        "https://reddit.com/*"
+        "http://facebook.com/*",
+        "https://facebook.com/*",
+        "http://www.facebook.com/*",
+        "https://www.facebook.com/*"
       ],
       "js" : ["contentscript.js"],
-      "run_at" : "document_idle",
+      "run_at" : "document_end",
       "all_frames" : false
     }
   ],
   "icons" : {
     "128" : "icon128.png"
-  }
+  },
+  "permissions": [
+    "http://www.reddit.com/"
+  ],
+  "background_page" : "background.html"
 }

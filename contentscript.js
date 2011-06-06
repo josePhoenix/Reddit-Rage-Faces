@@ -1,38 +1,85 @@
-//This points to the f7u12 CSS file
-var cssLive = "http://www.reddit.com/r/fffffffuuuuuuuuuuuu/stylesheet.css"
-
-var req = new XMLHttpRequest();
-req.open(
-    "GET",
-    cssLive,
-    false);
-req.setRequestHeader('Content-type', 'text/html');
-req.send('');
-var styleScript = req.responseText; 
-// Use a style tag to inject applied_subreddit_stylesheet classes
-var rageStyles = "<style type=\"text/css\" title=\"applied_subreddit_stylesheet\"> ";
-var rageIndex = styleScript.indexOf("a[href=");
-while (rageIndex < styleScript.length)
-{
-    // Copy all a[href styles, until the ending bracket.
-    if (styleScript.substring(rageIndex, rageIndex+7) == "a[href=")
-    {
-        // Rageface, copy to <style> while not }
-        while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) != '}')
-        {
-          rageStyles = rageStyles + styleScript.charAt(rageIndex);
-          rageIndex = rageIndex + 1;
-        }
-        rageStyles = rageStyles + '} ';
-        rageIndex = rageIndex + 1;
-    }
-    else
-    {
-        // Not a rage face, find one!
-        rageIndex = rageIndex + 1;
-    }
+function RAGEbuildSelector(kw) {
+    return "a[href=\"http://rage.fu/" + kw + "\"]";
 }
-// End this with </style>
-rageStyles = rageStyles + " </style>";
-document.head.innerHTML = document.head.innerHTML + rageStyles;
-// Whew, done!
+
+function RAGEinjectCSS(styleScript) {
+    // Use a style tag to inject applied_subreddit_stylesheet classes
+    var rageStyles = ""; // "<style type=\"text/css\" title=\"applied_subreddit_stylesheet\"> ";
+    var rageIndex = styleScript.indexOf("a[href=");
+    var keyWords = new Array();
+    while (rageIndex < styleScript.length)
+    {
+        // Copy all a[href styles, until the ending bracket.
+        if (styleScript.substring(rageIndex, rageIndex+7) == "a[href=")
+        {
+            var theseKeywords = new Array();
+            while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) != '{') {
+                
+                if (styleScript.substring(rageIndex, rageIndex+7) != "a[href=") {
+                    rageStyles = rageStyles + styleScript.charAt(rageIndex);
+                    rageIndex = rageIndex + 1;
+                } else {
+                    var keyword = "";
+                    rageIndex = rageIndex + 9;
+                    while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) != '"') {
+                        keyword = keyword + styleScript.charAt(rageIndex);
+                        rageIndex = rageIndex + 1;
+                    }
+                    theseKeywords.push(keyword);
+                    
+                    rageIndex = rageIndex + 2; // '"]'
+                    rageStyles = rageStyles + RAGEbuildSelector(keyword);
+                    console.log("a[href*=\"/" + keyword + "\"]");
+                }
+            }
+            
+            if (theseKeywords.length > 1) {
+                theseKeywords.forEach(function append(item) {
+                    keyWords.push(item);
+                });
+            }
+            // Rageface, copy to <style> while not }
+            while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) != '}')
+            {
+              rageStyles = rageStyles + styleScript.charAt(rageIndex);
+              rageIndex = rageIndex + 1;
+            }
+            rageStyles = rageStyles + '} ';
+            rageIndex = rageIndex + 1;
+        }
+        else
+        {
+            // Not a rage face, find one!
+            rageIndex = rageIndex + 1;
+        }
+    }
+    
+    var allRageSelector = "";
+    
+    keyWords.forEach(function (kw) {
+        allRageSelector = allRageSelector + RAGEbuildSelector(kw) + ", ";
+    });
+    
+    console.log(allRageSelector.slice(0, allRageSelector.length - 2));
+    
+    rageStyles = rageStyles + "\n" + allRageSelector.slice(0, allRageSelector.length - 2) + "{\n" +
+    
+                 "font-size: 0%;\n" +
+                 "color: white;\n" +
+                "}";
+    
+    // End this with </style>
+    // rageStyles = rageStyles + " </style>";
+    // document.head.innerHTML = document.head.innerHTML + rageStyles;
+    //                 console.log(keyWords);
+    var styles = document.createElement("style");
+    styles.setAttribute("type", "text/css");
+    styles.setAttribute("title", "ragefaces");
+    styles.innerHTML = rageStyles;
+    var headNode = document.getElementsByTagName("head")[0];
+    headNode.appendChild(styles);
+    // Whew, done!
+}
+
+chrome.extension.sendRequest({'action' : 'fetchRageCSS'}, RAGEinjectCSS);
+
