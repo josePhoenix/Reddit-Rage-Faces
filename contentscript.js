@@ -9,18 +9,18 @@ function RAGEinjectCSS(styleScript) {
     while (rageIndex < styleScript.length)
     {
         // Copy all a[href styles, until the ending bracket.
-        if (styleScript.substring(rageIndex, rageIndex+7) == "a[href=")
+        if (styleScript.substring(rageIndex, rageIndex+7) === "a[href=")
         {
-            var theseKeywords = new Array();
-            while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) != '{') {
+            var theseKeywords = [];
+            while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) !== '{') {
                 
-                if (styleScript.substring(rageIndex, rageIndex+7) != "a[href=") {
+                if (styleScript.substring(rageIndex, rageIndex+7) !== "a[href=") {
                     rageStyles = rageStyles + styleScript.charAt(rageIndex);
-                    rageIndex = rageIndex + 1;
+                    rageIndex += 1;
                 } else {
                     var keyword = "";
                     rageIndex = rageIndex + 9;
-                    while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) != '"') {
+                    while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) !== '"') {
                         keyword = keyword + styleScript.charAt(rageIndex);
                         rageIndex = rageIndex + 1;
                     }
@@ -28,7 +28,7 @@ function RAGEinjectCSS(styleScript) {
                     
                     rageIndex = rageIndex + 2; // '"]'
                     rageStyles = rageStyles + RAGEbuildSelector(keyword);
-                    console.log("a[href*=\"/" + keyword + "\"]");
+                   
                 }
             }
             
@@ -38,18 +38,18 @@ function RAGEinjectCSS(styleScript) {
                 });
             }
             // Rageface, copy to <style> while not }
-            while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) != '}')
+            while (rageIndex < styleScript.length && styleScript.charAt(rageIndex) !== '}')
             {
               rageStyles = rageStyles + styleScript.charAt(rageIndex);
-              rageIndex = rageIndex + 1;
+              rageIndex += 1;
             }
             rageStyles = rageStyles + '} ';
-            rageIndex = rageIndex + 1;
+            rageIndex += 1;
         }
         else
         {
             // Not a rage face, find one!
-            rageIndex = rageIndex + 1;
+            rageIndex +=1;
         }
     }
     
@@ -59,7 +59,6 @@ function RAGEinjectCSS(styleScript) {
         allRageSelector = allRageSelector + RAGEbuildSelector(kw) + ", ";
     });
     
-    console.log(allRageSelector.slice(0, allRageSelector.length - 2));
     
     rageStyles = rageStyles + "\n" + allRageSelector.slice(0, allRageSelector.length - 2) + "{\n" +
     
